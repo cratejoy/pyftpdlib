@@ -3084,7 +3084,7 @@ else:
             except (SSL.WantReadError, SSL.WantWriteError):
                 return 0
             except SSL.ZeroReturnError:
-                super(SSLConnection, self).handle_close()
+                self.handle_close()
                 return 0
             except SSL.SysCallError:
                 err = sys.exc_info()[1]
@@ -3092,7 +3092,7 @@ else:
                 if errnum == errno.EWOULDBLOCK:
                     return 0
                 elif errnum in _DISCONNECTED or errstr == 'Unexpected EOF':
-                    super(SSLConnection, self).handle_close()
+                    self.handle_close()
                     return 0
                 else:
                     raise
@@ -3103,13 +3103,13 @@ else:
             except (SSL.WantReadError, SSL.WantWriteError):
                 return b('')
             except SSL.ZeroReturnError:
-                super(SSLConnection, self).handle_close()
+                self.handle_close()
                 return b('')
             except SSL.SysCallError:
                 err = sys.exc_info()[1]
                 errnum, errstr = err.args
                 if errnum in _DISCONNECTED or errstr == 'Unexpected EOF':
-                    super(SSLConnection, self).handle_close()
+                    self.handle_close()
                     return b('')
                 else:
                     raise
@@ -3132,7 +3132,7 @@ else:
                                        errno.ENOBUFS):
                         return
                     elif err.args[0] in _DISCONNECTED:
-                        return super(SSLConnection, self).close()
+                        return self.handle_close()
                     else:
                         raise
             # Ok, this a mess, but the underlying OpenSSL API simply
@@ -3161,7 +3161,7 @@ else:
             except (SSL.WantReadError, SSL.WantWriteError):
                 pass
             except SSL.ZeroReturnError:
-                super(SSLConnection, self).close()
+                self.close()
             except SSL.SysCallError:
                 err = sys.exc_info()[1]
                 errnum, errstr = err.args
@@ -3181,7 +3181,7 @@ else:
             except socket.error:
                 err = sys.exc_info()[1]
                 if err.args[0] in _DISCONNECTED:
-                    super(SSLConnection, self).close()
+                    self.close()
                 else:
                     raise
             else:
